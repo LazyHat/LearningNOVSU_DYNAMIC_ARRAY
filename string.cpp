@@ -3,6 +3,7 @@
 
 #pragma region PROTOTYPES
 int StrSize(const char *str);
+string ToString(const int &num);
 #pragma endregion
 #pragma region CONSTRUCTORS AND DESTRUCTORS
 string::string()

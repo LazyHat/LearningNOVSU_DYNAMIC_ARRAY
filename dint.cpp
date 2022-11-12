@@ -6,7 +6,7 @@
 dint::dint()
 {
     this->value = nullptr;
-    this->size = NULL;
+    this->size = 0;
 }
 dint::dint(const int &amountOfElements)
 {
@@ -27,19 +27,19 @@ dint::dint(dint &&arr)
     this->value = arr.value;
     this->size = arr.size;
     arr.value = nullptr;
-    arr.size = NULL;
+    arr.size = 0;
 }
 dint::~dint()
 {
     delete[] this->value;
-    this->size = NULL;
+    this->size = 0;
 }
 #pragma region task
 void dint::del()
 {
     delete[] this->value;
     this->value = nullptr;
-    this->size = NULL;
+    this->size = 0;
 }
 dint &dint::create(const int &amountOfElements)
 {
@@ -61,29 +61,29 @@ dint &dint::create(const int &amountOfElements)
 }
 void dint::printline()
 {
-    if (NULL == this->size || nullptr == this->value)
+    if (0 == this->size || nullptr == this->value)
     {
         throw dintExeption("dint::printline(): value is nullptr or size equal NULL");
         exit(-1);
     }
-    printf_s("%d", this->value[0]);
+    std::cout << this->value[0];
     for (int i = 1; i < this->size; i++)
     {
-        printf_s(" %d", this->value[i]);
+        std::cout << " " << this->value[i];
     }
-    printf_s("\n");
+    std::cout << std::endl;
 }
 void dint::print()
 {
-    if (NULL == this->size || nullptr == this->value)
+    if (0 == this->size || nullptr == this->value)
     {
         throw dintExeption("dint::print(): value is nullptr or size equal NULL");
         exit(-1);
     }
-    printf_s("%d", this->value[0]);
+    std::cout << this->value[0];
     for (int i = 1; i < this->size; i++)
     {
-        printf_s(" %d", this->value[i]);
+        std::cout << " " << this->value[i];
     }
 }
 int &dint::operator[](const int &index)
@@ -110,10 +110,10 @@ dint &dint::operator=(const dint &arr)
 }
 int dint::maxelement()
 {
-    int max = -INT_MAX;
+    int max = -INT32_MAX;
     for (int i = 0; i < this->size; i++)
     {
-        max = max(max, this->value[i]);
+        max = (max > this->value[i]) ? max : this->value[i];
     }
     return max;
 }

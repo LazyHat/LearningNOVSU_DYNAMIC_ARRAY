@@ -1,11 +1,11 @@
 #define _CRT_RAND_S
 #include "string.cpp"
 #include "dint.cpp"
-#include <curses.h>
+//#include <curses.h>
 
 int main()
 {
-    initscr();
+    // initscr();
     try
     {
         dint k(6);
@@ -16,5 +16,6 @@ int main()
     {
         a.GetErrorMessage().PrintL();
     }
-    endwin();
+    return 0;
+    // endwin();
 }
