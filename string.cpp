@@ -242,11 +242,6 @@ int StrSize(const char *str)
         length++;
     return length;
 }
-void SetCPConsole(int cp)
-{
-    SetConsoleCP(cp);
-    SetConsoleOutputCP(cp);
-}
 #pragma region FILE_FSTREAM
 string GetStrLine(std::ifstream &file)
 {

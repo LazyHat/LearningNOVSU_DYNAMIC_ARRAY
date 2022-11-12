@@ -2,7 +2,6 @@
 // LIBRARY FOR CPP PROJECTS
 #include <iostream>
 #include <fstream>
-#include <windows.h>
 
 class string
 {
