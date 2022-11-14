@@ -132,7 +132,6 @@ dint &dint::resize(const int &newamount)
         }
         else if (newamount > this->size)
         {
-            (string("resize newamount bigger ") + newamount).PrintL();
             dint temp(*this);
             delete[] this->value;
             this->value = (int *)calloc(newamount, sizeof(int));
@@ -145,7 +144,6 @@ dint &dint::resize(const int &newamount)
         }
         else
         {
-            (string("resize newamount lower ") + newamount).PrintL();
             dint temp(*this);
             delete[] this->value;
             this->value = (int *)malloc(newamount * sizeof(int));

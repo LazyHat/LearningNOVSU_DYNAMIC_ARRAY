@@ -1,21 +1,25 @@
 #define _CRT_RAND_S
 #include "string.cpp"
 #include "dint.cpp"
-//#include <curses.h>
+#include <ncurses.h>
+#include <ctime>
+#include <thread>
+#include <chrono>
+
+void pause(unsigned int timems)
+{
+    using namespace std::this_thread;
+    using namespace std::chrono;
+    sleep_for(seconds(timems));
+}
+
+void Menu()
+{
+}
 
 int main()
 {
-    // initscr();
-    try
-    {
-        dint k(6);
-        k.del();
-        return 0;
-    }
-    catch (dintExeption &a)
-    {
-        a.GetErrorMessage().PrintL();
-    }
-    return 0;
-    // endwin();
+    initscr();
+
+    endwin();
 }
