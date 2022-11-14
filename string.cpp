@@ -1,6 +1,9 @@
 #pragma once
 #include "string.h"
 
+#pragma region GLOBAL
+string endl("\r\n");
+#pragma endregion
 #pragma region PROTOTYPES
 int StrSize(const char *str);
 string ToString(const int &num);
@@ -149,17 +152,17 @@ bool string::operator==(const string &obj)
         return false;
 }
 #pragma endregion
-int string::Size()
+int string::Size() const
 {
     return StrSize(s);
 }
-void string::Print()
+void string::Print() const
 {
     std::cout << *this;
 }
-void string::PrintL()
+void string::PrintL() const
 {
-    std::cout << *this << "\n";
+    std::cout << *this << "\r\n";
 }
 bool string::Contains(const char &symbol)
 {
@@ -243,6 +246,9 @@ int StrSize(const char *str)
         length++;
     return length;
 }
+void PrintF(const char *)
+{
+}
 #pragma region FILE_FSTREAM
 string GetStrLine(std::ifstream &file)
 {
@@ -250,3 +256,8 @@ string GetStrLine(std::ifstream &file)
 }
 #pragma endregion
 #pragma endregion
+
+template <class First, class... Other>
+void println(First first, Other... other)
+{
+}

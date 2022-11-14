@@ -15,9 +15,9 @@ public:
     string(const string &obj);
     string(string &&obj);
     ~string();
-    int Size();
-    void Print();
-    void PrintL();
+    int Size() const;
+    void Print() const;
+    void PrintL() const;
     bool Contains(const char &symbol);
     bool Contains(const string &obj);
     friend std::ostream &operator<<(std::ostream &out, const string &obj);
