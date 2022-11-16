@@ -1,6 +1,5 @@
 #pragma once
 #include "string.cpp"
-#include <list>
 
 enum profile
 {
