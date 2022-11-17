@@ -19,12 +19,12 @@ string::string(const char *str)
     if (str == nullptr)
         throw stringExeption("Exep: string(const char *str): str is nullptr");
     int length = StrSize(str);
-    s = new char[length + 1];
+    this->s = new char[length + 1];
     for (int i = 0; i < length; i++)
     {
-        s[i] = str[i];
+        this->s[i] = str[i];
     }
-    s[length] = '\0';
+    this->s[length] = '\0';
 }
 string::string(const string &obj)
 {
@@ -200,6 +200,59 @@ bool string::Contains(const string &obj)
         }
     }
     return false;
+}
+int string::ToInt()
+{
+    int value = 0;
+    string numbers("0123456789");
+    string intmax("2147483647");
+    int negative = false;
+    if (this->s[0] == '-')
+    {
+        negative = true;
+    }
+    if (this->Size() >= 10 + negative)
+    {
+        if (this->Size() == 10 + negative)
+        {
+            for (int i = negative; i < this->Size(); i++)
+            {
+                if (i == this->Size() - 1)
+                {
+                }
+                if (this->s[i] < intmax.s[i + negative])
+                {
+                    break;
+                }
+                else if (this->s[i] > intmax.s[i + negative])
+                {
+                    throw stringExeption("string::ToInt(): value is too big");
+                    exit(-1);
+                }
+            }
+        }
+        else if (this->Size() > 10 + negative)
+        {
+            throw stringExeption("string::ToInt(): value is too big");
+            exit(-1);
+        }
+    }
+    for (int i = negative; i < this->Size(); i++)
+    {
+        try
+        {
+            value *= 10;
+            value += numbers[this->s[i + negative]];
+        }
+        catch (stringExeption &a)
+        {
+            throw stringExeption("string::ToInt(): invalid argument");
+            exit(-1);
+        }
+    }
+    if (negative)
+        value *= -1;
+    return value;
 }
 string ToString(const int &num)
 {

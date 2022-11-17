@@ -11,7 +11,6 @@ private:
 public:
     string();
     string(const char *str);
-    string(const char &str);
     string(const string &obj);
     string(string &&obj);
     ~string();
@@ -24,6 +23,7 @@ public:
     friend std::istream &operator>>(std::istream &in, string &obj);
     friend string ToString(const int &num);
     char *ToArray() const;
+    int ToInt();
     string &operator=(string &&obj);
     string &operator=(const string &obj);
     string operator+(const string &obj);
