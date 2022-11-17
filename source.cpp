@@ -1,18 +1,22 @@
 #define _CRT_RAND_S
 #include "string.cpp"
 #include "dint.cpp"
-#include <ncurses.h>
+#include "window.cpp"
 #include <ctime>
 #include <thread>
 #include <chrono>
 
-void pause(unsigned int timems)
+void pause(unsigned int timeseconds)
 {
     using namespace std::this_thread;
     using namespace std::chrono;
-    sleep_for(seconds(timems));
+    sleep_for(seconds(timeseconds));
 }
 
 int main()
 {
+    initscr();
+    window win(5, 5, 5, 5);
+    win.~window();
+    endwin();
 }
