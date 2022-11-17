@@ -1,6 +1,6 @@
 #pragma once
 #include <ncurses.h>
-class window
+struct window
 {
     WINDOW *win;
 

@@ -13,10 +13,20 @@ void pause(unsigned int timeseconds)
     sleep_for(seconds(timeseconds));
 }
 
+void destwin(WINDOW *w)
+{
+    wborder(w, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+    wrefresh(w);
+    delwin(w);
+}
+
 int main()
 {
     initscr();
-    window win(5, 5, 5, 5);
-    win.~window();
+    WINDOW *win = newwin(10, 20, 5, 5);
+    refresh();
+    box(win, 0, 0);
+    wrefresh(win);
+    getch();
     endwin();
 }
