@@ -43,13 +43,15 @@ void dint::del()
 }
 dint &dint::create(const int &amountOfElements)
 {
-    if (0 == amountOfElements)
-    {
-        throw dintExeption("dint::create(0) - invalid argument.");
-    }
     if (nullptr != this->value)
     {
         delete[] this->value;
+    }
+    if (0 == amountOfElements)
+    {
+        this->value = nullptr;
+        this->size = 0;
+        return *this;
     }
     this->value = (int *)calloc(amountOfElements, sizeof(int));
     if (nullptr == this->value)
