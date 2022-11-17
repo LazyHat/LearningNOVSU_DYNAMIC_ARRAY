@@ -15,9 +15,4 @@ void pause(unsigned int timems)
 
 int main()
 {
-    dint k;
-    k.create(0);
-    k.resize(5);
-    k.printline();
-    k.create(0);
 }
