@@ -78,14 +78,14 @@ int wchoosemenu(std::list<string> items)
     destwin(w);
     return highlight + 1;
 }
-int wgetmenu(string quest)
+int wgetmenu(const char *quest)
 {
     WINDOW *w = newwin(10, 20, 0, 0);
     refresh();
     box(w, 0, 0);
     wrefresh(w);
     int get = 0;
-    mvwprintw(w, 1, 1, "%s", quest.ToArray());
+    mvwprintw(w, 1, 1, "%s", quest);
     wrefresh(w);
     move(2, 1);
     char *str;
