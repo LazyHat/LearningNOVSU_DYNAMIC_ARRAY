@@ -23,7 +23,7 @@ void destwin(WINDOW *w)
     delwin(w);
 }
 
-int wchoosemenu(std::list<string> items)
+int wchoosemenu(std::list<string> &items)
 {
     WINDOW *w = newwin(10, 20, 0, 0);
     refresh();
@@ -99,6 +99,8 @@ int wgetmenu(const char *quest)
     catch (stringExeption &a)
     {
         mvwprintw(w, 2, 1, "%s", a.GetError().ToArray());
+        wrefresh(w);
+        getch();
     }
     destwin(w);
     return result;
@@ -108,13 +110,26 @@ int main()
 {
     std::vector<dint> arrays;
     initscr();
-    int choice = wchoosemenu({"Create array"});
-    if (choice == 1)
+    while (true)
     {
-        int result = wgetmenu("Enter size");
-        arrays.push_back(dint(result));
+        std::list<string> menuitems = {"Create array", "Exit"};
+        int choice = wchoosemenu(menuitems);
+        switch (choice)
+        {
+        case 1:
+        {
+            int result = wgetmenu("Enter size");
+            arrays.push_back(dint(result));
+            printw("Array size %d", result);
+            refresh();
+        }
+        break;
+
+        default:
+            endwin();
+            return 0;
+        }
     }
-    printw("%d", choice);
     getch();
     endwin();
 }
