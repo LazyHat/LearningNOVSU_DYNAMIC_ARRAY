@@ -23,9 +23,9 @@ void destwin(WINDOW *w)
     delwin(w);
 }
 
-int wchoosemenu(std::list<string> &items)
+int wchoosemenu(int ysize, int xsize, std::list<string> items)
 {
-    WINDOW *w = newwin(10, 20, 0, 0);
+    WINDOW *w = newwin(ysize, xsize, 0, 0);
     refresh();
     box(w, 0, 0);
     wrefresh(w);
@@ -78,18 +78,21 @@ int wchoosemenu(std::list<string> &items)
     destwin(w);
     return highlight + 1;
 }
-int wgetmenu(const char *quest)
+int wgetmenu(int ysize, int xsize, const char *quest)
 {
-    WINDOW *w = newwin(10, 20, 0, 0);
+    WINDOW *w = newwin(ysize, xsize, 0, 0);
     refresh();
     box(w, 0, 0);
     wrefresh(w);
     int get = 0;
     mvwprintw(w, 1, 1, "%s", quest);
     wrefresh(w);
-    move(2, 1);
+    wmove(w, 2, 1);
+    echo();
+    wrefresh(w);
     char *str;
     wgetstr(w, str);
+    noecho();
     string s(str);
     int result;
     try
@@ -106,28 +109,73 @@ int wgetmenu(const char *quest)
     return result;
 }
 
+void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint> items, std::vector<WINDOW *> &winds)
+{
+    if (items.size() < winds.size())
+    {
+        for (int i = items.size(); i < winds.size(); i++)
+        {
+            destwin(winds[i]);
+            menuarritems.pop_back();
+        }
+    }
+    else if (items.size() > winds.size())
+    {
+        for (int i = winds.size(); i < items.size(); i++)
+        {
+            winds.push_back(newwin(4, 40, (int)((double)i * 4.25), xstartarrwin));
+            refresh();
+            box(winds[i], 0, 0);
+            wrefresh(winds[i]);
+            // menuarritems.push_back(string("Array ") + );
+        }
+    }
+    for (int i = 0; i < items.size(); i++)
+    {
+        mvwprintw(winds[i], 1, 1, "Array %d", i + 1);
+        for (int j = 0; j < items[i].size; j++)
+        {
+            mvwprintw(winds[i], 2, 1 + 2 * j, "%d", items[i][j]);
+        }
+        wrefresh(winds[i]);
+    }
+}
+
 int main()
 {
+    noecho();
     std::vector<dint> arrays;
+    std::vector<WINDOW *> windows;
     initscr();
+    int xsize = 30, ysize = 15, xstartarrwin = xsize + 1;
+    std::list<string> menuitems = {"Create array", "Exit"};
+    std::list<string> menuarritems;
+    bool flag = 1;
     while (true)
     {
-        std::list<string> menuitems = {"Create array", "Exit"};
-        int choice = wchoosemenu(menuitems);
+        if (arrays.size() != 0)
+        {
+            winarr(xstartarrwin, menuarritems, arrays, windows);
+        }
+        int choice = wchoosemenu(ysize, xsize, menuitems);
         switch (choice)
         {
         case 1:
         {
-            int result = wgetmenu("Enter size");
+            int result = wgetmenu(ysize, xsize, "Enter size");
             arrays.push_back(dint(result));
-            printw("Array size %d", result);
-            refresh();
+            if (flag)
+            {
+                menuitems.insert(++menuitems.begin(), "Change array");
+            }
         }
         break;
-
+        case 2:
+            wchoosemenu(ysize, xsize, menuarritems);
+            break;
         default:
             endwin();
-            return 0;
+            exit(0);
         }
     }
     getch();
