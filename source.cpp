@@ -23,6 +23,31 @@ void destwin(WINDOW *w)
     delwin(w);
 }
 
+int sizearrsymbols(dint arr)
+{
+    int size = 0;
+    for (int i = 0; i < arr.size; i++)
+    {
+        int item = arr[i];
+        do
+        {
+            item /= 10;
+            size++;
+        } while (item != 0);
+    }
+    return size;
+}
+int sizeintsymbols(int k)
+{
+    int size;
+    do
+    {
+        k /= 10;
+        size++;
+    } while (k != 0);
+    return size;
+}
+
 int wchoosemenu(int ysize, int xsize, std::list<string> items)
 {
     items.push_back("Exit");
@@ -66,20 +91,20 @@ int wchoosemenu(int ysize, int xsize, std::list<string> items)
             default:
                 break;
             }
-            if (highlight == 3)
+            if (highlight == items.size())
             {
                 highlight = 0;
             }
             else if (highlight == -1)
             {
-                highlight = 2;
+                highlight = items.size() - 1;
             }
         }
     }
     destwin(w);
     if (highlight == items.size() - 1)
         return -1;
-    return highlight + 1;
+    return highlight;
 }
 int wgetmenu(int ysize, int xsize, const char *quest)
 {
@@ -90,10 +115,9 @@ int wgetmenu(int ysize, int xsize, const char *quest)
     int get = 0;
     mvwprintw(w, 1, 1, "%s: ", quest);
     wrefresh(w);
-    // wmove(w, 2, 1);
     echo();
     wrefresh(w);
-    char *str;
+    char str[11];
     wgetstr(w, str);
     noecho();
     string s(str);
@@ -126,7 +150,7 @@ void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint>
     {
         for (int i = winds.size(); i < items.size(); i++)
         {
-            winds.push_back(newwin(4, (items[i].size < 8 ? 16 : items[i].size * 2 + 1), (int)((double)i * 4.25), xstartarrwin)); // items[i].size < 10? 10, items
+            winds.push_back(newwin(4, (items[i].size + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
             refresh();
             box(winds[i], 0, 0);
             wrefresh(winds[i]);
@@ -135,12 +159,75 @@ void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint>
     for (int i = 0; i < items.size(); i++)
     {
         mvwprintw(winds[i], 1, 1, "Array %d Max: %d", i + 1, items[i].maxelement());
+        wmove(winds[i], 2, 1);
         for (int j = 0; j < items[i].size; j++)
         {
-            mvwprintw(winds[i], 2, 1 + 2 * j, "%d", items[i][j]);
+            if (j != 0)
+                wprintw(winds[i], " ");
+            wprintw(winds[i], "%d", items[i][j]);
         }
         wrefresh(winds[i]);
     }
+}
+
+void menuarritemschanged(std::list<string> &items, std::vector<dint> arrs)
+{
+    items.clear();
+    for (int i = 0; i < arrs.size(); i++)
+    {
+        items.push_back(string("Array ") + (i + 1));
+    }
+}
+
+int wselectitem(int ysize, int xsize, WINDOW *arrwind, dint array)
+{
+    static int highlight = 0;
+    WINDOW *win = newwin(ysize, xsize, 0, 0);
+    refresh();
+    box(win, 0, 0);
+    mvwprintw(win, 1, 1, "Select value: ");
+    wrefresh(win);
+    keypad(arrwind, true);
+    while (true)
+    {
+        wmove(arrwind, 2, 1);
+        for (int i = 0; i < array.size; i++)
+        {
+            if (i != 0)
+                wprintw(arrwind, " ");
+            if (highlight == i)
+                wattron(arrwind, A_REVERSE);
+            wprintw(arrwind, "%d", array[i]);
+            wattroff(arrwind, A_REVERSE);
+        }
+        wrefresh(arrwind);
+        int choosevalue = wgetch(arrwind);
+        if (choosevalue == 10)
+            break;
+        switch (choosevalue)
+        {
+        case KEY_LEFT:
+            highlight--;
+            break;
+        case KEY_RIGHT:
+            highlight++;
+            break;
+        case KEY_UP:
+            destwin(win);
+            return -1;
+        case KEY_DOWN:
+            destwin(win);
+            return -1;
+        default:
+            break;
+        }
+        if (highlight == array.size)
+            highlight = 0;
+        else if (highlight == -1)
+            highlight = array.size - 1;
+    }
+    destwin(win);
+    return highlight;
 }
 
 int main()
@@ -151,11 +238,12 @@ int main()
     initscr();
     int xsize = 30, ysize = 15, xstartarrwin = xsize + 1;
     std::list<string> menuitems = {"Create array"};
-    std::list<string> menufunctions = {"Resize"};
+    std::list<string> menufunctions = {"Resize", "Change value", "Sort", "Delete"};
     std::list<string> menuarritems;
     bool flag = 1;
     while (true)
     {
+        menuarritemschanged(menuarritems, arrays);
         if (arrays.size() != 0)
         {
             winarr(xstartarrwin, menuarritems, arrays, windows);
@@ -163,11 +251,10 @@ int main()
         int choice = wchoosemenu(ysize, xsize, menuitems);
         switch (choice)
         {
-        case 1:
+        case 0:
         {
             int result = wgetmenu(ysize, xsize, "Enter size");
             arrays.push_back(dint(result));
-            menuarritems.insert(--menuarritems.end(), string("Array ") + (menuarritems.size() + 1));
             if (flag)
             {
                 menuitems.insert(++menuitems.begin(), "Change array");
@@ -175,7 +262,7 @@ int main()
             }
         }
         break;
-        case 2:
+        case 1:
         {
             int choosemenu = wchoosemenu(ysize, xsize, menuarritems);
             if (choosemenu == -1)
@@ -185,14 +272,47 @@ int main()
                 break;
             switch (choosefunc)
             {
-            case 1: // resize
+            case 0: // resize
+            {
                 int newsize = wgetmenu(ysize, xsize, "Enter new size");
-                arrays[choosemenu - 1].resize(newsize);
+                arrays[choosemenu].resize(newsize);
                 for (int i = windows.size() - 1; i >= 0; i--)
                 {
                     destwin(windows[i]);
-                    windows.pop_back();
                 }
+                windows.clear();
+            }
+            break;
+            case 1: // read
+            {
+                int highlight = 0;
+                while (true)
+                {
+                    int choosearrindex = wselectitem(ysize, xsize, windows[choosemenu], arrays[choosemenu]);
+                    if (choosearrindex == -1)
+                    {
+                        break;
+                    }
+                    int newval = wgetmenu(ysize, xsize, "Enter new value");
+                    arrays[choosemenu][choosearrindex] = newval;
+                    for (int i = 0; i < windows.size(); i++)
+                    {
+                        destwin(windows[i]);
+                    }
+                    windows.clear();
+                    winarr(xstartarrwin, menuarritems, arrays, windows);
+                }
+            }
+            break;
+            case 2:
+            {
+                int chooseprofile = wchoosemenu(ysize, xsize, {"From max to min", "From min to max"});
+                arrays[choosemenu].sort((profile)chooseprofile);
+            }
+            break; // sort
+            case 3:
+                break; // del
+            default:
                 break;
             }
         }

@@ -22,14 +22,13 @@ public:
     void swap(const int index1, const int index2);
 #pragma region taskf
     void del();
-    dint &create(const int &amountOfElements);          // create
-    void printline();                                   // print
-    void print();                                       // print
-    int &operator[](const int &index);                  // read(index);
-    int maxelement();                                   // max
-    dint &resize(const int &newamount);                 // resize
-    dint &sort(const profile sortprofile);              // sort 2 profiles
-    void read(const int startindex, const int *values); // read
+    dint &create(const int &amountOfElements); // create
+    void printline();                          // print
+    void print();                              // print
+    int &operator[](const int &index);         // read(index);
+    int maxelement();                          // max
+    dint &resize(const int &newamount);        // resize
+    dint &sort(const profile sortprofile);     // sort 2 profiles
 #pragma endregion
 };
 

@@ -207,7 +207,4 @@ dint &dint::sort(const profile sortprofile)
     }
     return *this;
 }
-void dint::read(const int startindex, const int *values)
-{
-}
 #pragma endregion
