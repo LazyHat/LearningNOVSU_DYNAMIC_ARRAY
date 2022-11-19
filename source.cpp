@@ -1,7 +1,7 @@
 #define _CRT_RAND_S
 #include "string.cpp"
 #include "dint.cpp"
-#include "window.cpp"
+#include <ncurses.h>
 #include <list>
 #include <vector>
 #include <ctime>
