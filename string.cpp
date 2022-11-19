@@ -227,14 +227,12 @@ int string::ToInt()
                 else if (this->s[i] > intmax.s[i + negative])
                 {
                     throw stringExeption("string::ToInt(): value is too big");
-                    exit(-1);
                 }
             }
         }
         else if (this->Size() > 10 + negative)
         {
             throw stringExeption("string::ToInt(): value is too big");
-            exit(-1);
         }
     }
     for (int i = negative; i < this->Size(); i++)
@@ -242,12 +240,11 @@ int string::ToInt()
         try
         {
             value *= 10;
-            value += numbers[this->s[i + negative]];
+            value += numbers[this->s[i]];
         }
         catch (stringExeption &a)
         {
             throw stringExeption("string::ToInt(): invalid argument");
-            exit(-1);
         }
     }
     if (negative)

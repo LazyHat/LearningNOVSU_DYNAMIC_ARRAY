@@ -7,6 +7,7 @@
 #include <ctime>
 #include <thread>
 #include <chrono>
+#include <iterator>
 
 void pause(unsigned int timeseconds)
 {
@@ -136,12 +137,12 @@ int wgetmenu(int ysize, int xsize, const char *quest)
 
 void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint> items, std::vector<WINDOW *> &winds)
 {
-    for (int i = items.size(); i < winds.size(); i++)
+    for (int i = 0; i < winds.size(); i++)
     {
         destwin(winds[i]);
     }
     winds.clear();
-    for (int i = winds.size(); i < items.size(); i++)
+    for (int i = 0; i < items.size(); i++)
     {
         winds.push_back(newwin(4, (items[i].size + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
         refresh();
@@ -230,7 +231,7 @@ int main()
     initscr();
     int xsize = 30, ysize = 15, xstartarrwin = xsize + 1;
     std::list<string> menuitems = {"Create array"};
-    std::list<string> menufunctions = {"Resize", "Change value", "Sort", "Randomize", "Delete"};
+    std::list<string> menufunctions = {"Resize", "Change values", "Sort", "Randomize", "Delete"};
     std::list<string> menuarritems;
     bool flag = 1;
     while (true)
@@ -295,10 +296,17 @@ int main()
             case 3: // reandomize
             {
                 int powerten = wgetmenu(ysize, xsize, "How big values you want(enter power of 10)");
+                arrays[choosemenu].rand(powerten);
             }
             break;
             case 4:
+            {
+                std::vector<dint>::iterator iter = arrays.begin();
+                std::advance(iter, choosemenu);
+                arrays[choosemenu].del();
+                arrays.erase(iter);
                 break; // delete
+            }
             default:
                 break;
             }
