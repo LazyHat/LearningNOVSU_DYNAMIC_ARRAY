@@ -1,4 +1,3 @@
-#define _CRT_RAND_S
 #include "string.cpp"
 #include "dint.cpp"
 #include <ncurses.h>
