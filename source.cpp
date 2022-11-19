@@ -126,7 +126,7 @@ void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint>
     {
         for (int i = winds.size(); i < items.size(); i++)
         {
-            winds.push_back(newwin(4, items[i].size * 2 + 1, (int)((double)i * 4.25), xstartarrwin));
+            winds.push_back(newwin(4, (items[i].size < 8 ? 16 : items[i].size * 2 + 1), (int)((double)i * 4.25), xstartarrwin)); // items[i].size < 10? 10, items
             refresh();
             box(winds[i], 0, 0);
             wrefresh(winds[i]);
@@ -134,7 +134,7 @@ void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint>
     }
     for (int i = 0; i < items.size(); i++)
     {
-        mvwprintw(winds[i], 1, 1, "Array %d", i + 1);
+        mvwprintw(winds[i], 1, 1, "Array %d Max: %d", i + 1, items[i].maxelement());
         for (int j = 0; j < items[i].size; j++)
         {
             mvwprintw(winds[i], 2, 1 + 2 * j, "%d", items[i][j]);
