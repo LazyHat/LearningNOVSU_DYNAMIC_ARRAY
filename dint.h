@@ -29,6 +29,7 @@ public:
     int maxelement();                          // max
     dint &resize(const int &newamount);        // resize
     dint &sort(const profile sortprofile);     // sort 2 profiles
+    dint &rand(int powerten);
 #pragma endregion
 };
 

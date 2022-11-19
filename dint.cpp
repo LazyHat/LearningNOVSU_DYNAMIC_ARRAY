@@ -2,6 +2,19 @@
 #include <stdio.h>
 #include "dint.h"
 #include <stdlib.h>
+#include <ctime>
+
+int power(int value, int powerof)
+{
+    if (powerof < 0)
+        return -1;
+    else if (powerof == 0)
+        return 1;
+    else if (powerof == 1)
+        return value;
+    else
+        return value * power(value, powerof - 1);
+}
 
 dint::dint()
 {
@@ -204,6 +217,15 @@ dint &dint::sort(const profile sortprofile)
             }
         }
         break;
+    }
+    return *this;
+}
+dint &dint::rand(int powerten)
+{
+    srand(time(NULL));
+    for (int i = 0; i < this->size; i++)
+    {
+        this->value[i] = std::rand() % power(10, powerten);
     }
     return *this;
 }

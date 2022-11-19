@@ -111,10 +111,8 @@ int wgetmenu(int ysize, int xsize, const char *quest)
     WINDOW *w = newwin(ysize, xsize, 0, 0);
     refresh();
     box(w, 0, 0);
-    wrefresh(w);
     int get = 0;
     mvwprintw(w, 1, 1, "%s: ", quest);
-    wrefresh(w);
     echo();
     wrefresh(w);
     char str[11];
@@ -138,23 +136,17 @@ int wgetmenu(int ysize, int xsize, const char *quest)
 
 void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint> items, std::vector<WINDOW *> &winds)
 {
-    if (items.size() < winds.size())
+    for (int i = items.size(); i < winds.size(); i++)
     {
-        for (int i = items.size(); i < winds.size(); i++)
-        {
-            destwin(winds[i]);
-            menuarritems.pop_back();
-        }
+        destwin(winds[i]);
     }
-    else if (items.size() > winds.size())
+    winds.clear();
+    for (int i = winds.size(); i < items.size(); i++)
     {
-        for (int i = winds.size(); i < items.size(); i++)
-        {
-            winds.push_back(newwin(4, (items[i].size + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
-            refresh();
-            box(winds[i], 0, 0);
-            wrefresh(winds[i]);
-        }
+        winds.push_back(newwin(4, (items[i].size + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
+        refresh();
+        box(winds[i], 0, 0);
+        wrefresh(winds[i]);
     }
     for (int i = 0; i < items.size(); i++)
     {
@@ -238,14 +230,14 @@ int main()
     initscr();
     int xsize = 30, ysize = 15, xstartarrwin = xsize + 1;
     std::list<string> menuitems = {"Create array"};
-    std::list<string> menufunctions = {"Resize", "Change value", "Sort", "Delete"};
+    std::list<string> menufunctions = {"Resize", "Change value", "Sort", "Randomize", "Delete"};
     std::list<string> menuarritems;
     bool flag = 1;
     while (true)
     {
-        menuarritemschanged(menuarritems, arrays);
         if (arrays.size() != 0)
         {
+            menuarritemschanged(menuarritems, arrays);
             winarr(xstartarrwin, menuarritems, arrays, windows);
         }
         int choice = wchoosemenu(ysize, xsize, menuitems);
@@ -276,11 +268,6 @@ int main()
             {
                 int newsize = wgetmenu(ysize, xsize, "Enter new size");
                 arrays[choosemenu].resize(newsize);
-                for (int i = windows.size() - 1; i >= 0; i--)
-                {
-                    destwin(windows[i]);
-                }
-                windows.clear();
             }
             break;
             case 1: // read
@@ -295,11 +282,6 @@ int main()
                     }
                     int newval = wgetmenu(ysize, xsize, "Enter new value");
                     arrays[choosemenu][choosearrindex] = newval;
-                    for (int i = 0; i < windows.size(); i++)
-                    {
-                        destwin(windows[i]);
-                    }
-                    windows.clear();
                     winarr(xstartarrwin, menuarritems, arrays, windows);
                 }
             }
@@ -309,9 +291,14 @@ int main()
                 int chooseprofile = wchoosemenu(ysize, xsize, {"From max to min", "From min to max"});
                 arrays[choosemenu].sort((profile)chooseprofile);
             }
-            break; // sort
-            case 3:
-                break; // del
+            break;  // sort
+            case 3: // reandomize
+            {
+                int powerten = wgetmenu(ysize, xsize, "How big values you want(enter power of 10)");
+            }
+            break;
+            case 4:
+                break; // delete
             default:
                 break;
             }
