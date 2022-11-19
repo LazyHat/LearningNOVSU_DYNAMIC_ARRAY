@@ -4,16 +4,7 @@
 #include <list>
 #include <vector>
 #include <ctime>
-#include <thread>
-#include <chrono>
 #include <iterator>
-
-void pause(unsigned int timeseconds)
-{
-    using namespace std::this_thread;
-    using namespace std::chrono;
-    sleep_for(seconds(timeseconds));
-}
 
 void destwin(WINDOW *w)
 {
