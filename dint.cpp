@@ -19,40 +19,40 @@ int power(int value, int powerof)
 dint::dint()
 {
     this->value = nullptr;
-    this->size = 0;
+    this->_size = 0;
 }
 dint::dint(const int &amountOfElements)
 {
     this->value = (int *)calloc(amountOfElements, sizeof(int));
-    this->size = amountOfElements;
+    this->_size = amountOfElements;
 }
 dint::dint(const dint &arr)
 {
-    this->value = (int *)malloc(arr.size * sizeof(int));
-    for (int i = 0; i < arr.size; i++)
+    this->value = (int *)malloc(arr.size() * sizeof(int));
+    for (int i = 0; i < arr.size(); i++)
     {
         this->value[i] = arr.value[i];
     }
-    this->size = arr.size;
+    this->_size = arr.size();
 }
 dint::dint(dint &&arr)
 {
     this->value = arr.value;
-    this->size = arr.size;
+    this->_size = arr.size();
     arr.value = nullptr;
-    arr.size = 0;
+    arr._size = 0;
 }
 dint::~dint()
 {
     delete[] this->value;
-    this->size = 0;
+    this->_size = 0;
 }
 #pragma region task
 void dint::del()
 {
     delete[] this->value;
     this->value = nullptr;
-    this->size = 0;
+    this->_size = 0;
 }
 dint &dint::create(const int &amountOfElements)
 {
@@ -63,7 +63,7 @@ dint &dint::create(const int &amountOfElements)
     if (0 == amountOfElements)
     {
         this->value = nullptr;
-        this->size = 0;
+        this->_size = 0;
         return *this;
     }
     this->value = (int *)calloc(amountOfElements, sizeof(int));
@@ -71,18 +71,18 @@ dint &dint::create(const int &amountOfElements)
     {
         (string("not allocate ") + amountOfElements).PrintL();
     }
-    this->size = amountOfElements;
+    this->_size = amountOfElements;
     return *this;
 }
 void dint::printline()
 {
-    if (0 == this->size || nullptr == this->value)
+    if (0 == this->size() || nullptr == this->value)
     {
         throw dintExeption("dint::printline(): value is nullptr or size equal NULL");
         exit(-1);
     }
     std::cout << this->value[0];
-    for (int i = 1; i < this->size; i++)
+    for (int i = 1; i < this->size(); i++)
     {
         std::cout << " " << this->value[i];
     }
@@ -90,20 +90,20 @@ void dint::printline()
 }
 void dint::print()
 {
-    if (0 == this->size || nullptr == this->value)
+    if (0 == this->size() || nullptr == this->value)
     {
         throw dintExeption("dint::print(): value is nullptr or size equal NULL");
         exit(-1);
     }
     std::cout << this->value[0];
-    for (int i = 1; i < this->size; i++)
+    for (int i = 1; i < this->size(); i++)
     {
         std::cout << " " << this->value[i];
     }
 }
 int &dint::operator[](const int &index)
 {
-    if (this->size - 1 < index)
+    if (this->size() - 1 < index)
     {
         throw dintExeption("dint::operator[] out of bounds exeption");
     }
@@ -115,18 +115,18 @@ dint &dint::operator=(const dint &arr)
     {
         delete[] this->value;
     }
-    this->value = (int *)malloc(arr.size * sizeof(int));
-    for (int i = 0; i < arr.size; i++)
+    this->value = (int *)malloc(arr.size() * sizeof(int));
+    for (int i = 0; i < arr.size(); i++)
     {
         this->value[i] = arr.value[i];
     }
-    this->size = arr.size;
+    this->_size = arr.size();
     return *this;
 }
 int dint::maxelement()
 {
     int max = -INT32_MAX;
-    for (int i = 0; i < this->size; i++)
+    for (int i = 0; i < this->size(); i++)
     {
         max = (max > this->value[i]) ? max : this->value[i];
     }
@@ -141,17 +141,17 @@ dint &dint::resize(const int &newamount)
     }
     else
     {
-        if (newamount == this->size)
+        if (newamount == this->size())
         {
             return *this;
         }
-        else if (newamount > this->size)
+        else if (newamount > this->size())
         {
             dint temp(*this);
             delete[] this->value;
             this->value = (int *)calloc(newamount, sizeof(int));
-            this->size = newamount;
-            for (int i = 0; i < temp.size; i++)
+            this->_size = newamount;
+            for (int i = 0; i < temp.size(); i++)
             {
                 this->value[i] = temp.value[i];
             }
@@ -162,8 +162,8 @@ dint &dint::resize(const int &newamount)
             dint temp(*this);
             delete[] this->value;
             this->value = (int *)malloc(newamount * sizeof(int));
-            this->size = newamount;
-            for (int i = 0; i < this->size; i++)
+            this->_size = newamount;
+            for (int i = 0; i < this->size(); i++)
             {
                 this->value[i] = temp.value[i];
             }
@@ -182,13 +182,13 @@ dint &dint::sort(const profile sortprofile)
     switch (sortprofile)
     {
     case 0:
-        for (int i = 0; i < this->size; i++)
+        for (int i = 0; i < this->size(); i++)
         {
             if (0 == i && this->value[i + 1] > this->value[i])
             {
                 swap(i, i + 1);
             }
-            else if (i == this->size - 1)
+            else if (i == this->size() - 1)
             {
                 continue;
             }
@@ -200,13 +200,13 @@ dint &dint::sort(const profile sortprofile)
         }
         break;
     case 1:
-        for (int i = 0; i < this->size; i++)
+        for (int i = 0; i < this->size(); i++)
         {
             if (0 == i && this->value[i + 1] < this->value[i])
             {
                 swap(i, i + 1);
             }
-            else if (i == this->size - 1)
+            else if (i == this->size() - 1)
             {
                 continue;
             }
@@ -223,7 +223,7 @@ dint &dint::sort(const profile sortprofile)
 dint &dint::rand(int powerten)
 {
     srand(time(NULL));
-    for (int i = 0; i < this->size; i++)
+    for (int i = 0; i < this->size(); i++)
     {
         this->value[i] = std::rand() % power(10, powerten);
     }

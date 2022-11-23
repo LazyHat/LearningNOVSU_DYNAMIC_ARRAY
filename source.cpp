@@ -17,7 +17,7 @@ void destwin(WINDOW *w)
 int sizearrsymbols(dint arr)
 {
     int size = 0;
-    for (int i = 0; i < arr.size; i++)
+    for (int i = 0; i < arr.size(); i++)
     {
         int item = arr[i];
         do
@@ -134,7 +134,7 @@ void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint>
     winds.clear();
     for (int i = 0; i < items.size(); i++)
     {
-        winds.push_back(newwin(4, (items[i].size + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
+        winds.push_back(newwin(4, (items[i].size() + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size() + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
         refresh();
         box(winds[i], 0, 0);
         wrefresh(winds[i]);
@@ -143,7 +143,7 @@ void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint>
     {
         mvwprintw(winds[i], 1, 1, "Array %d Max: %d", i + 1, items[i].maxelement());
         wmove(winds[i], 2, 1);
-        for (int j = 0; j < items[i].size; j++)
+        for (int j = 0; j < items[i].size(); j++)
         {
             if (j != 0)
                 wprintw(winds[i], " ");
@@ -174,7 +174,7 @@ int wselectitem(int ysize, int xsize, WINDOW *arrwind, dint array)
     while (true)
     {
         wmove(arrwind, 2, 1);
-        for (int i = 0; i < array.size; i++)
+        for (int i = 0; i < array.size(); i++)
         {
             if (i != 0)
                 wprintw(arrwind, " ");
@@ -204,10 +204,10 @@ int wselectitem(int ysize, int xsize, WINDOW *arrwind, dint array)
         default:
             break;
         }
-        if (highlight == array.size)
+        if (highlight == array.size())
             highlight = 0;
         else if (highlight == -1)
-            highlight = array.size - 1;
+            highlight = array.size() - 1;
     }
     destwin(win);
     return highlight;

@@ -10,9 +10,10 @@ enum profile
 class dint
 {
     int *value = nullptr;
+    unsigned int _size;
 
 public:
-    unsigned int size;
+    unsigned int size() const { return _size; }
     dint();
     dint(const dint &arr);
     dint(const int &amountOfElements);
