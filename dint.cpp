@@ -44,13 +44,13 @@ dint::dint(dint &&arr)
 }
 dint::~dint()
 {
-    delete[] this->value;
+    free(this->value);
     this->_size = 0;
 }
 #pragma region task
 void dint::del()
 {
-    delete[] this->value;
+    free(this->value);
     this->value = nullptr;
     this->_size = 0;
 }
@@ -58,7 +58,7 @@ dint &dint::create(const int &amountOfElements)
 {
     if (nullptr != this->value)
     {
-        delete[] this->value;
+        free(this->value);
     }
     if (0 == amountOfElements)
     {
@@ -113,7 +113,7 @@ dint &dint::operator=(const dint &arr)
 {
     if (nullptr != this->value)
     {
-        delete[] this->value;
+        free(this->value);
     }
     this->value = (int *)malloc(arr.size() * sizeof(int));
     for (int i = 0; i < arr.size(); i++)
@@ -148,7 +148,7 @@ dint &dint::resize(const int &newamount)
         else if (newamount > this->size())
         {
             dint temp(*this);
-            delete[] this->value;
+            free(this->value);
             this->value = (int *)calloc(newamount, sizeof(int));
             this->_size = newamount;
             for (int i = 0; i < temp.size(); i++)
@@ -160,7 +160,7 @@ dint &dint::resize(const int &newamount)
         else
         {
             dint temp(*this);
-            delete[] this->value;
+            free(this->value);
             this->value = (int *)malloc(newamount * sizeof(int));
             this->_size = newamount;
             for (int i = 0; i < this->size(); i++)
