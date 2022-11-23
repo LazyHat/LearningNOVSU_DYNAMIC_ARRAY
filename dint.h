@@ -1,5 +1,5 @@
 #pragma once
-#include "string.cpp"
+//#include "string.cpp"
 
 enum profile
 {
