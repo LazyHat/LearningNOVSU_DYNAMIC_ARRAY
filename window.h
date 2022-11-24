@@ -1,4 +1,5 @@
 #pragma once
+#include "string.h"
 #include <ncurses.h>
 #include <vector>
 #include <list>
@@ -14,5 +15,6 @@ public:
     ~window();
     int getsizey() { return w->_maxy + 1; }
     int getsizex() { return w->_maxx + 1; }
-    int printchoosemenu(std::list<string> menuitems, std::vector<string> staffwords);
+    int addchoosemenu(std::list<string> menuitems, std::vector<string> staffwords);
+    int addgetmenu(string callsentence);
 };

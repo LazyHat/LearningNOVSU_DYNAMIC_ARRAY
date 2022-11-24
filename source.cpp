@@ -32,68 +32,6 @@ int sizeintsymbols(int k)
     return size;
 }
 
-int wchoosemenu(int ysize, int xsize, std::list<string> items, bool backtomenu)
-{
-    items.push_back("Back");
-    if (backtomenu)
-        items.push_back("Back to menu");
-    WINDOW *w = newwin(ysize, xsize, 0, 0);
-    refresh();
-    box(w, 0, 0);
-    wrefresh(w);
-    curs_set(0);
-    keypad(w, true);
-    int choice = 0;
-    int highlight = 0;
-    while (true)
-    {
-        int i = 0;
-        for (auto &&item : items)
-        {
-            if (highlight == i)
-            {
-                wattron(w, A_REVERSE);
-            }
-            mvwprintw(w, i + 1, 1, "%d.%s", i + 1, item.ToArray());
-            wattroff(w, A_REVERSE);
-            i++;
-        }
-        wrefresh(w);
-        choice = wgetch(w);
-        if (choice == 10)
-        {
-            break;
-        }
-        else
-        {
-            switch (choice)
-            {
-            case KEY_UP:
-                highlight--;
-                break;
-            case KEY_DOWN:
-                highlight++;
-                break;
-            default:
-                break;
-            }
-            if (highlight == items.size())
-            {
-                highlight = 0;
-            }
-            else if (highlight == -1)
-            {
-                highlight = items.size() - 1;
-            }
-        }
-    }
-    destwin(w);
-    if (highlight == items.size() - 1 && backtomenu)
-        return -2;
-    else if (highlight == items.size() - 2 + !backtomenu)
-        return -1;
-    return highlight;
-}
 int wgetmenu(int ysize, int xsize, const char *quest)
 {
     WINDOW *w = newwin(ysize, xsize, 0, 0);
@@ -215,7 +153,9 @@ int main()
     initscr();
     noecho();
     curs_set(0);
-    window ws(0, 0, 5, 7);
+    window ws(0, 0, 10, 20);
+    ws.addchoosemenu({"First", "Second", "Third"}, {BackW, BacktmW, ExitW});
+    ws.addgetmenu("Get");
     getch();
     endwin();
     //     noecho();
