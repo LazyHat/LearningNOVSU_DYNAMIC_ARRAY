@@ -6,7 +6,6 @@
 #include <ctime>
 #include <iterator>
 
-void destwin(WINDOW *w) {}
 int sizearrsymbols(dint arr)
 {
     int size = 0;
@@ -60,31 +59,30 @@ int wgetmenu(int ysize, int xsize, const char *quest)
     return result;
 }
 
-void winarr(int xstartarrwin, std::list<string> &menuarritems, std::vector<dint> items, std::vector<WINDOW *> &winds)
+void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint> items, std::vector<window> &winds)
 {
     for (int i = 0; i < winds.size(); i++)
     {
-        destwin(winds[i]);
+        winds[i].destwin();
     }
     winds.clear();
     for (int i = 0; i < items.size(); i++)
     {
-        winds.push_back(newwin(4, (items[i].size() + 1 + sizearrsymbols(items[i]) < 16 ? 16 : items[i].size() + 1 + sizearrsymbols(items[i])), (int)((double)i * 4.25), xstartarrwin));
-        refresh();
-        box(winds[i], 0, 0);
-        wrefresh(winds[i]);
+        if (items[i].size() + 1 + sizearrsymbols(items[i]) < 16)
+            winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4.25), 4, 16));
+        else
+            winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4.25), 4, items[i].size() + 1 + sizearrsymbols(items[i])));
     }
     for (int i = 0; i < items.size(); i++)
     {
-        mvwprintw(winds[i], 1, 1, "Array %d Max: %d", i + 1, items[i].maxelement());
-        wmove(winds[i], 2, 1);
+        winds[i].mvprint(1, 1, string("Array " + (i + 1)) + string(" Max: " + items[i].maxelement()));
+        winds[i].move(2, 1);
         for (int j = 0; j < items[i].size(); j++)
         {
             if (j != 0)
-                wprintw(winds[i], " ");
-            wprintw(winds[i], "%d", items[i][j]);
+                winds[i].print(" ");
+            winds[i].print(ToString(items[i][j]));
         }
-        wrefresh(winds[i]);
     }
 }
 
@@ -153,127 +151,132 @@ int main()
     initscr();
     noecho();
     curs_set(0);
-    window ws(0, 0, 10, 20);
-    getch();
-    endwin();
-    //     noecho();
-    //     std::vector<dint> arrays;
-    //     std::vector<WINDOW *> windows;
-    //     initscr();
-    //     int xsize = 30, ysize = 15, xstartarrwin = xsize + 1;
-    //     std::list<string> menuitems = {"Create array"};
-    //     std::list<string> menufunctions = {"Resize", "Change values", "Sort", "Randomize", "Delete"};
-    //     std::list<string> menuarritems;
-    //     bool flag = false;
-    //     while (true)
-    //     {
-    //         if (arrays.size() != 0)
-    //         {
-    //             menuarritemschanged(menuarritems, arrays);
-    //         }
-    //         int choice = wchoosemenu(ysize, xsize, menuitems, false);
-    //         if (choice == -1)
-    //         {
-    //             endwin();
-    //             echo();
-    //             exit(0);
-    //         }
-    //         switch (choice)
-    //         {
-    //         case 0:
-    //         {
-    //             int result = wgetmenu(ysize, xsize, "Enter size");
-    //             arrays.push_back(dint(result));
-    //             winarr(xstartarrwin, menuarritems, arrays, windows);
-    //             if (!flag)
-    //             {
-    //                 menuitems.insert(++menuitems.begin(), "Change array");
-    //                 flag = true;
-    //             }
-    //         }
-    //         break;
-    //         case 1:
-    //         {
-    //             bool stop = true;
-    //             while (stop)
-    //             {
-    //                 int choosemenu = wchoosemenu(ysize, xsize, menuarritems, false);
-    //                 if (choosemenu == -1 || choosemenu == -2)
-    //                     break;
-    //                 while (stop)
-    //                 {
-    //                     int choosefunc = wchoosemenu(ysize, xsize, menufunctions, true);
-    //                     if (choosefunc == -1)
-    //                         break;
-    //                     if (choosefunc == -2)
-    //                     {
-    //                         stop = false;
-    //                         break;
-    //                     }
-    //                     switch (choosefunc)
-    //                     {
-    //                     case 0: // resize
-    //                     {
-    //                         int newsize = wgetmenu(ysize, xsize, "Enter new size");
-    //                         arrays[choosemenu].resize(newsize);
-    //                         winarr(xstartarrwin, menuarritems, arrays, windows);
-    //                     }
-    //                     break;
-    //                     case 1: // read
-    //                     {
-    //                         int highlight = 0;
-    //                         while (true)
-    //                         {
-    //                             int choosearrindex = wselectitem(ysize, xsize, windows[choosemenu], arrays[choosemenu]);
-    //                             if (choosearrindex == -1)
-    //                             {
-    //                                 break;
-    //                             }
-    //                             int newval = wgetmenu(ysize, xsize, "Enter new value");
-    //                             arrays[choosemenu][choosearrindex] = newval;
-    //                             winarr(xstartarrwin, menuarritems, arrays, windows);
-    //                         }
-    //                     }
-    //                     break;
-    //                     case 2: // sort
-    //                     {
-    //                         int chooseprofile = wchoosemenu(ysize, xsize, {"From max to min", "From min to max"}, false);
-    //                         if (chooseprofile == -1)
-    //                             break;
-    //                         arrays[choosemenu].sort((profile)chooseprofile);
-    //                         winarr(xstartarrwin, menuarritems, arrays, windows);
-    //                     }
-    //                     break;
-    //                     case 3: // reandomize
-    //                     {
-    //                         int powerten = wgetmenu(ysize, xsize, "How big values you want(enter power of 10)");
-    //                         arrays[choosemenu].rand(powerten);
-    //                         winarr(xstartarrwin, menuarritems, arrays, windows);
-    //                     }
-    //                     break;
-    //                     case 4: // delete
-    //                     {
-    //                         std::vector<dint>::iterator iter = arrays.begin();
-    //                         std::advance(iter, choosemenu);
-    //                         arrays[choosemenu].del();
-    //                         arrays.erase(iter);
-    //                         std::vector<WINDOW *>::iterator iterw = windows.begin();
-    //                         if (arrays.size() == 0)
-    //                         {
-    //                             winarr(xstartarrwin, menuarritems, arrays, windows);
-    //                             menuitems.pop_back();
-    //                             flag = false;
-    //                         }
-    //                         stop = false;
-    //                     }
-    //                     break;
-    //                     default:
-    //                         stop = false;
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //         }
-    //     }
+    window mw(0, 0, 10, 20);
+    std::vector<dint> arrs;
+    std::vector<window> ws;
+    std::list<string> menuitems = {"Create array"};
+    std::list<string> menufunctions = {"Resize", "Change values", "Sort", "Randomize", "Delete"};
+    std::list<string> menuarritems;
+    bool flag = true;
+    while (true)
+    {
+        switch (mw.addchoosemenu(menuitems, {WORD_EXIT}))
+        {
+        case 0:
+        {
+            arrs.push_back(dint(mw.addgetmenu("Enter size")));
+            winarr(mw, menuarritems, arrs, ws);
+            if (flag)
+            {
+                menuitems.push_back("Change array");
+                flag = false;
+            }
+        }
+        break;
+        case 1:
+        {
+        }
+        break;
+        }
+        getch();
+        endwin();
+        //         switch (choice)
+        //         {
+        //         case 0:
+        //         {
+        //             int result = wgetmenu(ysize, xsize, "Enter size");
+        //             arrays.push_back(dint(result));
+        //             winarr(xstartarrwin, menuarritems, arrays, windows);
+        //             if (!flag)
+        //             {
+        //                 menuitems.insert(++menuitems.begin(), "Change array");
+        //                 flag = true;
+        //             }
+        //         }
+        //         break;
+        //         case 1:
+        //         {
+        //             bool stop = true;
+        //             while (stop)
+        //             {
+        //                 int choosemenu = wchoosemenu(ysize, xsize, menuarritems, false);
+        //                 if (choosemenu == -1 || choosemenu == -2)
+        //                     break;
+        //                 while (stop)
+        //                 {
+        //                     int choosefunc = wchoosemenu(ysize, xsize, menufunctions, true);
+        //                     if (choosefunc == -1)
+        //                         break;
+        //                     if (choosefunc == -2)
+        //                     {
+        //                         stop = false;
+        //                         break;
+        //                     }
+        //                     switch (choosefunc)
+        //                     {
+        //                     case 0: // resize
+        //                     {
+        //                         int newsize = wgetmenu(ysize, xsize, "Enter new size");
+        //                         arrays[choosemenu].resize(newsize);
+        //                         winarr(xstartarrwin, menuarritems, arrays, windows);
+        //                     }
+        //                     break;
+        //                     case 1: // read
+        //                     {
+        //                         int highlight = 0;
+        //                         while (true)
+        //                         {
+        //                             int choosearrindex = wselectitem(ysize, xsize, windows[choosemenu], arrays[choosemenu]);
+        //                             if (choosearrindex == -1)
+        //                             {
+        //                                 break;
+        //                             }
+        //                             int newval = wgetmenu(ysize, xsize, "Enter new value");
+        //                             arrays[choosemenu][choosearrindex] = newval;
+        //                             winarr(xstartarrwin, menuarritems, arrays, windows);
+        //                         }
+        //                     }
+        //                     break;
+        //                     case 2: // sort
+        //                     {
+        //                         int chooseprofile = wchoosemenu(ysize, xsize, {"From max to min", "From min to max"}, false);
+        //                         if (chooseprofile == -1)
+        //                             break;
+        //                         arrays[choosemenu].sort((profile)chooseprofile);
+        //                         winarr(xstartarrwin, menuarritems, arrays, windows);
+        //                     }
+        //                     break;
+        //                     case 3: // reandomize
+        //                     {
+        //                         int powerten = wgetmenu(ysize, xsize, "How big values you want(enter power of 10)");
+        //                         arrays[choosemenu].rand(powerten);
+        //                         winarr(xstartarrwin, menuarritems, arrays, windows);
+        //                     }
+        //                     break;
+        //                     case 4: // delete
+        //                     {
+        //                         std::vector<dint>::iterator iter = arrays.begin();
+        //                         std::advance(iter, choosemenu);
+        //                         arrays[choosemenu].del();
+        //                         arrays.erase(iter);
+        //                         std::vector<WINDOW *>::iterator iterw = windows.begin();
+        //                         if (arrays.size() == 0)
+        //                         {
+        //                             winarr(xstartarrwin, menuarritems, arrays, windows);
+        //                             menuitems.pop_back();
+        //                             flag = false;
+        //                         }
+        //                         stop = false;
+        //                     }
+        //                     break;
+        //                     default:
+        //                         stop = false;
+        //                         break;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         }
+        //     }
+    }
 }
