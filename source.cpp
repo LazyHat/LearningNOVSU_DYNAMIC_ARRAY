@@ -154,8 +154,6 @@ int main()
     noecho();
     curs_set(0);
     window ws(0, 0, 10, 20);
-    ws.addchoosemenu({"First", "Second", "Third"}, {BackW, BacktmW, ExitW});
-    ws.addgetmenu("Get");
     getch();
     endwin();
     //     noecho();

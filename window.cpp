@@ -1,13 +1,20 @@
 #pragma once
 #include "window.h"
 #include "string.cpp"
+#define POS_LEFT 0
+#define POS_RIGHT 1
 
 window::window(unsigned int ystart, unsigned int xstart, unsigned int ysize, unsigned int xsize)
 {
-    w = newwin(ysize, xsize, ystart, xstart);
+    this->w = newwin(ysize, xsize, ystart, xstart);
     refresh();
-    box(w, 0, 0);
-    wrefresh(w);
+    this->adddesign();
+}
+window::window(window positionfrom, bool position, unsigned int ystart, unsigned int ysize, unsigned int xsize)
+{
+    this->w = newwin(ysize, xsize, (position ? positionfrom.getsizex() + positionfrom.getstartx() : positionfrom.getstartx() - xsize), ystart);
+    refresh();
+    this->adddesign();
 }
 window::~window()
 {
@@ -19,6 +26,10 @@ window::~window()
 void window::clear()
 {
     werase(this->w);
+    this->adddesign();
+}
+void window::adddesign()
+{
     box(this->w, 0, 0);
     wrefresh(this->w);
 }
