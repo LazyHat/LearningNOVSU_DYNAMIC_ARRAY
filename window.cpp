@@ -16,6 +16,12 @@ window::~window()
     wrefresh(this->w);
     delwin(this->w);
 }
+void window::clear()
+{
+    werase(this->w);
+    box(this->w, 0, 0);
+    wrefresh(this->w);
+}
 int window::addchoosemenu(std::list<string> menuitems, std::vector<string> staffwords)
 {
     for (auto &&item : staffwords)
@@ -53,10 +59,12 @@ int window::addchoosemenu(std::list<string> menuitems, std::vector<string> staff
                     endwin();
                     exit(0);
                 }
+                this->clear();
                 return (highlight + staffwords.size() - menuitems.size() + 1) * -1;
             }
             else
             {
+                this->clear();
                 return highlight;
             }
             break;
@@ -75,14 +83,16 @@ int window::addgetmenu(string callsentence)
     wrefresh(this->w);
     echo();
     char str[10];
-    mvwgetstr(this->w, 1, 2, str);
+    wgetstr(this->w, str);
     try
     {
+        this->clear();
         return string(str).ToInt();
     }
     catch (stringExeption &a)
     {
         mvwprintw(this->w, 1, 2, "%s", a.GetError().ToArray());
     }
+    this->clear();
     return 0;
 }

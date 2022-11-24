@@ -15,6 +15,7 @@ public:
     ~window();
     int getsizey() { return w->_maxy + 1; }
     int getsizex() { return w->_maxx + 1; }
+    void clear();
     int addchoosemenu(std::list<string> menuitems, std::vector<string> staffwords);
     int addgetmenu(string callsentence);
 };
