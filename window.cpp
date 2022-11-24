@@ -24,6 +24,11 @@ void window::destwin()
     delwin(this->w);
     refresh();
 }
+void window::print(const int num)
+{
+    wprintw(this->w, "%d", num);
+    wrefresh(this->w);
+}
 void window::print(string str)
 {
     wprintw(this->w, "%s", str.ToArray());
@@ -48,7 +53,7 @@ void window::adddesign()
     box(this->w, 0, 0);
     wrefresh(this->w);
 }
-int window::addchoosemenu(std::list<string> menuitems, std::vector<string> staffwords)
+int window::addchsmenu(std::list<string> menuitems, std::vector<string> staffwords)
 {
     for (auto &&item : staffwords)
     {
@@ -86,7 +91,14 @@ int window::addchoosemenu(std::list<string> menuitems, std::vector<string> staff
                     exit(0);
                 }
                 this->clear();
-                return (highlight + staffwords.size() - menuitems.size() + 1) * -1;
+                if (staffwords[highlight - menuitems.size() + staffwords.size()] == WORD_BACK)
+                {
+                    return INT_BACK;
+                }
+                else if (staffwords[highlight - menuitems.size() + staffwords.size()] == WORD_BACKTM)
+                {
+                    return INT_BACKTM;
+                }
             }
             else
             {
@@ -106,15 +118,15 @@ int window::addchoosemenu(std::list<string> menuitems, std::vector<string> staff
 int window::addselect(dint array)
 {
     keypad(this->w, true);
-    this->move(2, 1);
-    int highlight = 0;
+    static int selecthighlight = 0;
     while (true)
     {
+        this->move(2, 1);
         for (int i = 0; i < array.size(); i++)
         {
             if (i != 0)
                 wprintw(this->w, " ");
-            if (i == highlight)
+            if (i == selecthighlight)
                 wattron(this->w, A_REVERSE);
             wprintw(this->w, "%d", array[i]);
             wattroff(this->w, A_REVERSE);
@@ -123,24 +135,24 @@ int window::addselect(dint array)
         switch (wgetch(this->w))
         {
         case KEY_RIGHT:
-            highlight++;
+            selecthighlight++;
             break;
         case KEY_LEFT:
-            highlight++;
+            selecthighlight--;
             break;
         case KEY_UP:
             this->clear();
-            return -1;
+            return INT_BACK;
         case KEY_DOWN:
             this->clear();
-            return -1;
+            return INT_BACK;
         case 10:
-            return highlight;
+            return selecthighlight;
         }
-        if (highlight < 0)
-            highlight = array.size() - 1;
-        else if (highlight > array.size() - 1)
-            highlight = 0;
+        if (selecthighlight < 0)
+            selecthighlight = array.size() - 1;
+        else if (selecthighlight > array.size() - 1)
+            selecthighlight = 0;
     }
 }
 int window::addgetmenu(string callsentence)
@@ -153,12 +165,15 @@ int window::addgetmenu(string callsentence)
     try
     {
         this->clear();
+        noecho();
         return string(str).ToInt();
     }
     catch (stringExeption &a)
     {
         mvwprintw(this->w, 1, 2, "%s", a.GetError().ToArray());
+        wrefresh(this->w);
     }
     this->clear();
+    noecho();
     return 0;
 }
