@@ -47,14 +47,7 @@ void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint
     }
     for (int i = 0; i < items.size(); i++)
     {
-        winds[i].mvprint(1, 1, string("Array ") + (i + 1) + string(" Max: ") + items[i].maxelement());
-        winds[i].move(2, 1);
-        for (int j = 0; j < items[i].size(); j++)
-        {
-            if (j != 0)
-                winds[i].print(" ");
-            winds[i].print(items[i][j]);
-        }
+        winds[i].winrefresh(items[i], i);
     }
 }
 
@@ -81,10 +74,6 @@ int main()
     bool flag = true;
     while (true)
     {
-        if (arrs.size() != 0)
-        {
-            winarr(mw, menuarritems, arrs, ws);
-        }
         switch (mw.addchsmenu(menuitems, {WORD_EXIT}))
         {
         case 0:
@@ -150,7 +139,7 @@ int main()
                         if (chooseprofile == -1)
                             break;
                         arrs[chmenu].sort((profile)chooseprofile);
-                        winarr(mw, menuarritems, arrs, ws);
+                        ws[chmenu].winrefresh(arrs[chmenu], chmenu);
                     }
                     break;
                     case 3: // reandomize

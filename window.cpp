@@ -24,6 +24,28 @@ void window::destwin()
     delwin(this->w);
     refresh();
 }
+void window::winrefresh(dint array, int pos)
+{
+    int ysize = this->w->_maxy + 1;
+    int xsize = this->w->_maxx + 1;
+    int yst = this->w->_begy;
+    int xst = this->w->_begx;
+    this->clear();
+    this->destwin();
+    *this = window(yst, xst, ysize, xsize);
+    this->adddesign();
+    this->mvprint(1, 1, string("Array ") + (pos * 5) + string(" Max: ") + array.maxelement());
+    this->move(2, 1);
+    for (int j = 0; j < array.size(); j++)
+    {
+        if (j != 0)
+            this->print(" ");
+        this->print(array[j]);
+    }
+}
+void window::winresize(int sizex)
+{
+}
 void window::print(const int num)
 {
     wprintw(this->w, "%d", num);
