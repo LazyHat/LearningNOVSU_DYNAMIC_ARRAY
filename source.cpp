@@ -18,17 +18,7 @@ int sizearrsymbols(dint arr)
             size++;
         } while (item != 0);
     }
-    return size;
-}
-int sizeintsymbols(int k)
-{
-    int size;
-    do
-    {
-        k /= 10;
-        size++;
-    } while (k != 0);
-    return size;
+    return arr.size() + size + 1;
 }
 
 void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint> items, std::vector<window> &winds)
@@ -40,10 +30,7 @@ void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint
     winds.clear();
     for (int i = 0; i < items.size(); i++)
     {
-        if (items[i].size() + 1 + sizearrsymbols(items[i]) < 17)
-            winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4.25), 4, 17));
-        else
-            winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4.25), 4, items[i].size() + 1 + sizearrsymbols(items[i])));
+        winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4.25), 4, (sizearrsymbols(items[i]) < 17 ? 17 : sizearrsymbols(items[i]))));
     }
     for (int i = 0; i < items.size(); i++)
     {
@@ -74,6 +61,8 @@ int main()
     bool flag = true;
     while (true)
     {
+        if (!flag && arrs.size() == 0)
+            menuitems.pop_back();
         switch (mw.addchsmenu(menuitems, {WORD_EXIT}))
         {
         case 0:
@@ -114,7 +103,8 @@ int main()
                     {
                         int newsize = mw.addgetmenu("Enter new size");
                         arrs[chmenu].resize(newsize);
-                        winarr(mw, menuarritems, arrs, ws);
+                        ws[chmenu].winresize((sizearrsymbols(arrs[chmenu]) < 17 ? 17 : sizearrsymbols(arrs[chmenu])));
+                        ws[chmenu].winrefresh(arrs[chmenu], chmenu);
                     }
                     break;
                     case 1: // read
@@ -129,7 +119,8 @@ int main()
                             }
                             int newval = mw.addgetmenu("Enter new value");
                             arrs[chmenu][choosearrindex] = newval;
-                            winarr(mw, menuarritems, arrs, ws);
+                            ws[chmenu].winresize((sizearrsymbols(arrs[chmenu]) < 17 ? 17 : sizearrsymbols(arrs[chmenu])));
+                            ws[chmenu].winrefresh(arrs[chmenu], chmenu);
                         }
                     }
                     break;
@@ -146,7 +137,8 @@ int main()
                     {
                         int powerten = mw.addgetmenu("How big values you want(enter power of 10)");
                         arrs[chmenu].rand(powerten);
-                        winarr(mw, menuarritems, arrs, ws);
+                        ws[chmenu].winresize((sizearrsymbols(arrs[chmenu]) < 17 ? 17 : sizearrsymbols(arrs[chmenu])));
+                        ws[chmenu].winrefresh(arrs[chmenu], chmenu);
                     }
                     break;
                     case 4: // delete
@@ -155,13 +147,8 @@ int main()
                         std::advance(iter, chmenu);
                         arrs[chmenu].del();
                         arrs.erase(iter);
-                        std::vector<window>::iterator iterw = ws.begin();
-                        if (arrs.size() == 0)
-                        {
-                            winarr(mw, menuarritems, arrs, ws);
-                            menuitems.pop_back();
-                            flag = false;
-                        }
+                        winarr(mw, menuarritems, arrs, ws);
+                        menuarritemschanged(menuarritems, arrs);
                         stop = false;
                     }
                     break;

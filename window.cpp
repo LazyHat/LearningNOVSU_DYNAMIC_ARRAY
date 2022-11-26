@@ -1,6 +1,7 @@
 #pragma once
 #include "window.h"
 #include "string.cpp"
+#include "dint.h"
 #define POS_LEFT 0
 #define POS_RIGHT 1
 
@@ -26,13 +27,7 @@ void window::destwin()
 }
 void window::winrefresh(dint array, int pos)
 {
-    int ysize = this->w->_maxy + 1;
-    int xsize = this->w->_maxx + 1;
-    int yst = this->w->_begy;
-    int xst = this->w->_begx;
     this->clear();
-    this->destwin();
-    *this = window(yst, xst, ysize, xsize);
     this->adddesign();
     this->mvprint(1, 1, string("Array ") + (pos * 5) + string(" Max: ") + array.maxelement());
     this->move(2, 1);
@@ -43,8 +38,15 @@ void window::winrefresh(dint array, int pos)
         this->print(array[j]);
     }
 }
-void window::winresize(int sizex)
+void window::winresize(int xsize)
 {
+    int ysize = this->w->_maxy + 1;
+    int yst = this->w->_begy;
+    int xst = this->w->_begx;
+    this->clear();
+    this->destwin();
+    *this = window(yst, xst, ysize, xsize);
+    this->adddesign();
 }
 void window::print(const int num)
 {
