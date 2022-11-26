@@ -41,6 +41,19 @@ void window::winrefresh(dint array, int pos)
         this->print(array[j]);
     }
 }
+void window::winrefresh()
+{
+    wrefresh(this->w);
+}
+void window::winresizey(unsigned int ysize)
+{
+    int xsize = this->w->_maxx;
+    int xstart = this->w->_begx;
+    int ystart = this->w->_begy;
+    this->destwin();
+    this->w = newwin(ysize, xsize, ystart, xstart);
+    this->adddesign();
+}
 void window::print(const int num)
 {
     wprintw(this->w, "%d", num);
@@ -174,7 +187,8 @@ int window::addselect(dint array)
 }
 int window::addgetmenu(string callsentence)
 {
-    mvwprintw(this->w, 1, 1, "%s: ", callsentence.ToArray());
+    mvwprintw(this->w, 1, 1, "%s", callsentence.ToArray());
+    mvwprintw(this->w, 3, 1, "->");
     wrefresh(this->w);
     echo();
     char str[10];

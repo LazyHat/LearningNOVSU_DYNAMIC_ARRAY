@@ -28,7 +28,7 @@ void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint
         winds[i].destwin();
     }
     winds.clear();
-    int countw = (19 + 1) / 4;
+    int countw = (mainwindow.w->_maxy + 1) / 4;
     int itemssize = items.size();
     for (int i = 0; i <= itemssize / countw; i++)
     {
@@ -64,10 +64,10 @@ int main()
     initscr();
     noecho();
     curs_set(0);
-    window mw(0, 0, 20, 25);
+    window mw(0, 0, 20, 26);
     std::vector<dint> arrs;
     std::vector<window> ws;
-    std::list<string> menuitems = {"Create array"};
+    std::list<string> menuitems = {"Create array", "Change size of grid"};
     std::list<string> menufunctions = {"Resize", "Change values", "Sort", "Randomize", "Delete"};
     std::list<string> menuarritems;
     bool flag = true;
@@ -93,6 +93,13 @@ int main()
         }
         break;
         case 1:
+        {
+            int newsize = mw.addgetmenu("Set size(Default - 20)");
+            mw.winresizey(newsize);
+            winarr(mw, menuarritems, arrs, ws);
+        }
+        break;
+        case 2:
         {
             bool stop = true;
             while (stop)
@@ -125,7 +132,12 @@ int main()
                     {
                         while (true)
                         {
+                            mw.mvprint(1, 1, "Select element");
+                            mw.mvprint(2, 1, "RIGHT/LEFT - select");
+                            mw.mvprint(3, 1, "UP/DOWN - BACK");
+                            mw.winrefresh();
                             int choosearrindex = ws[chmenu].addselect(arrs[chmenu]);
+                            mw.clear();
                             if (choosearrindex == INT_BACK)
                             {
                                 winarr(mw, menuarritems, arrs, ws);

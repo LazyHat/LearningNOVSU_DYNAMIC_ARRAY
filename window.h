@@ -20,6 +20,8 @@ public:
     window(window posfrom, unsigned int xsize);
     void destwin();
     void winrefresh(dint array, int pos);
+    void winrefresh();
+    void winresizey(unsigned int ysize);
     int getstarty() { return w->_begx; }
     int getstartx() { return w->_begy; }
     int getsizey() { return w->_maxy + 1; }
