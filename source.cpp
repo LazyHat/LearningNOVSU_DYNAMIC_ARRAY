@@ -30,7 +30,7 @@ void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint
     winds.clear();
     for (int i = 0; i < items.size(); i++)
     {
-        winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4.25), 4, (sizearrsymbols(items[i]) < 17 ? 17 : sizearrsymbols(items[i]))));
+        winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4), 4, (sizearrsymbols(items[i]) < 17 ? 17 : sizearrsymbols(items[i]))));
     }
     for (int i = 0; i < items.size(); i++)
     {
