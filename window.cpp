@@ -2,18 +2,21 @@
 #include "window.h"
 #include "string.cpp"
 #include "dint.h"
-#define POS_LEFT 0
-#define POS_RIGHT 1
-
 window::window(unsigned int ystart, unsigned int xstart, unsigned int ysize, unsigned int xsize)
 {
     this->w = newwin(ysize, xsize, ystart, xstart);
     refresh();
     this->adddesign();
 }
-window::window(window positionfrom, bool position, unsigned int ystart, unsigned int ysize, unsigned int xsize)
+window::window(window positionfrom, unsigned int ystart, unsigned int ysize, unsigned int xsize)
 {
-    this->w = newwin(ysize, xsize, ystart, (position ? positionfrom.getsizex() + positionfrom.getstartx() : positionfrom.getstartx() - xsize));
+    this->w = newwin(ysize, xsize, ystart, positionfrom.getsizex() + positionfrom.getstartx());
+    refresh();
+    this->adddesign();
+}
+window::window(window posfrom, unsigned int xsize)
+{
+    this->w = newwin(posfrom.w->_maxy + 1, xsize, posfrom.w->_begy, posfrom.w->_begx + posfrom.w->_maxx + 1);
     refresh();
     this->adddesign();
 }
@@ -29,7 +32,7 @@ void window::winrefresh(dint array, int pos)
 {
     this->clear();
     this->adddesign();
-    this->mvprint(1, 1, string("Array ") + (pos * 5) + string(" Max: ") + array.maxelement());
+    this->mvprint(1, 1, string("Array ") + (pos + 1) + string(" Max: ") + array.maxelement());
     this->move(2, 1);
     for (int j = 0; j < array.size(); j++)
     {
@@ -37,16 +40,6 @@ void window::winrefresh(dint array, int pos)
             this->print(" ");
         this->print(array[j]);
     }
-}
-void window::winresize(int xsize)
-{
-    int ysize = this->w->_maxy + 1;
-    int yst = this->w->_begy;
-    int xst = this->w->_begx;
-    this->clear();
-    this->destwin();
-    *this = window(yst, xst, ysize, xsize);
-    this->adddesign();
 }
 void window::print(const int num)
 {

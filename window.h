@@ -16,10 +16,10 @@ public:
 
 public:
     window(unsigned int ystart, unsigned int xstart, unsigned int ysize, unsigned int xsize);
-    window(window positionfrom, bool position, unsigned int ystart, unsigned int ysize, unsigned int xsize);
+    window(window positionfrom, unsigned int ystart, unsigned int ysize, unsigned int xsize);
+    window(window posfrom, unsigned int xsize);
     void destwin();
     void winrefresh(dint array, int pos);
-    void winresize(int newsizex);
     int getstarty() { return w->_begx; }
     int getstartx() { return w->_begy; }
     int getsizey() { return w->_maxy + 1; }

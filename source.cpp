@@ -28,9 +28,21 @@ void winarr(window mainwindow, std::list<string> &menuarritems, std::vector<dint
         winds[i].destwin();
     }
     winds.clear();
-    for (int i = 0; i < items.size(); i++)
+    int countw = (19 + 1) / 4;
+    int itemssize = items.size();
+    for (int i = 0; i <= itemssize / countw; i++)
     {
-        winds.push_back(window(mainwindow, POS_RIGHT, (int)((double)i * 4), 4, (sizearrsymbols(items[i]) < 17 ? 17 : sizearrsymbols(items[i]))));
+        for (int j = 0; j < items.size() - countw * i && j < countw; j++)
+        {
+            if (i == 0)
+            {
+                winds.push_back(window(mainwindow, j * 4, 4, (sizearrsymbols(items[j]) < 17 ? 17 : sizearrsymbols(items[j]))));
+            }
+            else
+            {
+                winds.push_back(window(winds[j + (i - 1) * countw], (sizearrsymbols(items[j + i * countw]) < 17 ? 17 : sizearrsymbols(items[j + i * countw]))));
+            }
+        }
     }
     for (int i = 0; i < items.size(); i++)
     {
@@ -52,7 +64,7 @@ int main()
     initscr();
     noecho();
     curs_set(0);
-    window mw(0, 0, 10, 25);
+    window mw(0, 0, 20, 25);
     std::vector<dint> arrs;
     std::vector<window> ws;
     std::list<string> menuitems = {"Create array"};
@@ -106,8 +118,7 @@ int main()
                     {
                         int newsize = mw.addgetmenu("Enter new size");
                         arrs[chmenu].resize(newsize);
-                        ws[chmenu].winresize((sizearrsymbols(arrs[chmenu]) < 17 ? 17 : sizearrsymbols(arrs[chmenu])));
-                        ws[chmenu].winrefresh(arrs[chmenu], chmenu);
+                        winarr(mw, menuarritems, arrs, ws);
                     }
                     break;
                     case 1: // read
@@ -122,8 +133,7 @@ int main()
                             }
                             int newval = mw.addgetmenu("Enter new value");
                             arrs[chmenu][choosearrindex] = newval;
-                            ws[chmenu].winresize((sizearrsymbols(arrs[chmenu]) < 17 ? 17 : sizearrsymbols(arrs[chmenu])));
-                            ws[chmenu].winrefresh(arrs[chmenu], chmenu);
+                            winarr(mw, menuarritems, arrs, ws);
                         }
                     }
                     break;
@@ -140,8 +150,7 @@ int main()
                     {
                         int powerten = mw.addgetmenu("How big values you want(enter power of 10)");
                         arrs[chmenu].rand(powerten);
-                        ws[chmenu].winresize((sizearrsymbols(arrs[chmenu]) < 17 ? 17 : sizearrsymbols(arrs[chmenu])));
-                        ws[chmenu].winrefresh(arrs[chmenu], chmenu);
+                        winarr(mw, menuarritems, arrs, ws);
                     }
                     break;
                     case 4: // delete
