@@ -62,7 +62,10 @@ int main()
     while (true)
     {
         if (!flag && arrs.size() == 0)
+        {
             menuitems.pop_back();
+            flag = true;
+        }
         switch (mw.addchsmenu(menuitems, {WORD_EXIT}))
         {
         case 0:
